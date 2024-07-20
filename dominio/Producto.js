@@ -5,7 +5,7 @@ export default class Producto{
         this.description = description;
         this.code = code;
         this.price = price;
-        this.estado = true;
+        this.status = true;
         this.stock = stock;
         this.category = category;    
         this.thumbnails = [];    

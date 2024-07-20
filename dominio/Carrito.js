@@ -1,4 +1,4 @@
-export default class Cart{
+export default class Carrito{
     constructor(id){
         this.id = id;
         this.products = [];

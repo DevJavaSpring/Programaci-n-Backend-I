@@ -1,26 +1,26 @@
 [
    {
       "id": 1,
-      "titulo": "yogur Serenisima",
-      "descripcion": "yogur entero frutilla x 900 gr",
-      "codigo": "192487675399576746637374658",
-      "precio": 1500,
-      "estado": true,
+      "title": "yogur Serenisima",
+      "description": "yogur entero frutilla x 900 gr",
+      "code": "192487675399576746637374658",
+      "price": 1500,
+      "status": true,
       "stock": 100,
-      "categoria": "Lacteos",
+      "category": "Lacteos",
       "thumbnails": [
          "1-yogur.jpg"
       ]
    },
    {
       "id": 2,
-      "titulo": "Gaseosa Coca Cola",
-      "descripcion": "Gaseosa coca cola x 3Lts",
-      "codigo": "1093947536484995783747575784",
-      "precio": 2700,
-      "estado": true,
+      "title": "Gaseosa Coca Cola",
+      "description": "Gaseosa coca cola x 3Lts",
+      "code": "1093947536484995783747575784",
+      "price": 2700,
+      "status": true,
       "stock": 3000,
-      "categoria": "Bebidas",
+      "category": "Bebidas",
       "thumbnails": [
          "2-Gaseosa-CocaCola-Original-3-Lts-1.jpg",
          "2-Gaseosa-CocaCola-Original-3-Lts-2.jpg"
@@ -28,13 +28,13 @@
    },
    {
       "id": 3,
-      "titulo": "Papas Fritas Lays",
-      "descripcion": "Papas Fritas Lays x 250 gr",
-      "codigo": "193558584304854059394805934",
-      "precio": 3000,
-      "estado": true,
+      "title": "Papas Fritas Lays",
+      "description": "Papas Fritas Lays x 250 gr",
+      "code": "193558584304854059394805934",
+      "price": 3000,
+      "status": true,
       "stock": 150,
-      "categoria": "Lays",
+      "category": "Lays",
       "thumbnails": [
          "3-Lays-Clasicas-250-g-1.jpg",
          "3-Lays-Clasicas-250-g-2.jpg"
@@ -42,39 +42,39 @@
    },
    {
       "id": 4,
-      "titulo": "Galletas Surtido ",
-      "descripcion": "Galletas Surtido Bagley x 398 gr",
-      "codigo": "194885459049439459739437384",
-      "precio": 1100,
-      "estado": true,
+      "title": "Galletas Surtido ",
+      "description": "Galletas Surtido Bagley x 398 gr",
+      "code": "194885459049439459739437384",
+      "price": 1100,
+      "status": true,
       "stock": 1000,
-      "categoria": "Galletas",
+      "category": "Galletas",
       "thumbnails": [
          "4-Galletas-Surtido-Bagley-1.jpg"
       ]
    },
    {
       "id": 5,
-      "titulo": "Pure de Tomate",
-      "descripcion": "Pure de Tomate Canale x 520 gr",
-      "codigo": "4759439893783829383",
-      "precio": 1015,
-      "estado": true,
+      "title": "Pure de Tomate",
+      "description": "Pure de Tomate Canale x 520 gr",
+      "code": "4759439893783829383",
+      "price": 1015,
+      "status": true,
       "stock": 100,
-      "categoria": "Comestible",
+      "category": "Comestible",
       "thumbnails": [
          "5-pure-tomate-canale-520-g-1.jpg"
       ]
    },
    {
       "id": 6,
-      "titulo": "Cerveza",
-      "descripcion": "Cerveza Norte x 1 lt",
-      "codigo": "63484594849237283982364",
-      "precio": 2700,
-      "estado": true,
+      "title": "Cerveza",
+      "description": "Cerveza Norte x 1 lt",
+      "code": "63484594849237283982364",
+      "price": 2700,
+      "status": true,
       "stock": 1000,
-      "categoria": "Bebidas",
+      "category": "Bebidas",
       "thumbnails": [
          "6-cerveza-norte.jpg"
       ]

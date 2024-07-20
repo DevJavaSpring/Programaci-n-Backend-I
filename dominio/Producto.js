@@ -1,4 +1,14 @@
 export default class Producto{
+    id;
+    title;
+    description;
+    code;
+    price;
+    status;
+    stock;
+    category;
+    thumbnails;
+
     constructor(id, title, description, code, price, stock, category){
         this.id = id;
         this.title = title;

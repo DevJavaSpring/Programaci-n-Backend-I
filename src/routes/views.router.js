@@ -14,6 +14,33 @@ routerViews.get('/', (req, res) => {
     })
 })
 
+routerViews.get('/realTimeProducts', (req, res) => {
+    let carritosArray = ManagerCarritos.obtenerInventario();
+    let productosArray = JSON.parse(ManagerProductos.obtenerInventarioTotal());
+
+
+    res.render('realTimeProducts', {
+        carritosArray: carritosArray,
+        productosArray: productosArray
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 routerViews.get("/obtenerProductosPorCarrito/:cid",  (req, res)=>{
     let carritos = ManagerCarritos.buscarCarritoPorId(Number(req.params.cid));
     let productos = carritos[0].products;

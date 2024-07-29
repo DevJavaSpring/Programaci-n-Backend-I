@@ -1,0 +1,97 @@
+<div>
+    <h1>Productos Agregados Al Carrito - WEBSOCKET</h1>
+
+    <label for="item-select">Seleccionar Carrito:</label>
+    <select id="item-select" name="selectedItem">
+        <option value="null"> Seleccionar</option>
+        {{#each carritosArray}}
+            <option value="{{this.id}}"> Carrito Nº{{this.id}}</option>
+        {{/each}}
+    </select>
+
+    <br><br>
+
+    <label for="item-select-product">Seleccionar Producto:</label>
+    <select id="item-select-product" name="selectedItemProduct">
+        <option value="null"> Seleccionar</option>
+        {{#each productosArray}}
+            <option value="{{this.id}}"> {{this.description}}</option>
+        {{/each}}
+    </select>
+    <button id="idAgregarProd"> Agregar</button>
+
+    <br><br>
+
+    <table id="miTabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $("#item-select").change(function() {        
+        let option = document.getElementById('item-select').value;
+        
+        if(option === "null"){
+            let tbody = document.querySelector('#miTabla tbody');
+            tbody.innerHTML = '';
+            alert("Debe seleccionar un carrito.");
+            return;
+        }
+
+        $.ajax({
+            url : `http://localhost:8080/obtenerProductosPorCarrito/${option}`,
+            type: 'get',
+            datatype: 'json',
+            success: function(data){
+                console.log("RESPUESTA DE LA API ", data);
+                //var productos = JSON.parse(data);
+
+                let tbody = document.querySelector('#miTabla tbody');
+                tbody.innerHTML = '';
+                
+                data.forEach(dato => {
+                    const fila = document.createElement('tr');
+
+                    const colId = document.createElement('td');
+                    colId.textContent = dato.product;
+                    fila.appendChild(colId);
+
+                    const colDescripcion = document.createElement('td');
+                    colDescripcion.textContent = dato.description;
+                    fila.appendChild(colDescripcion);
+
+                    const colPrecio = document.createElement('td');
+                    colPrecio.textContent = dato.price;
+                    fila.appendChild(colPrecio);
+
+                    const colCantidad = document.createElement('td');
+                    colCantidad.textContent = dato.quantity;
+                    fila.appendChild(colCantidad);
+
+                    const colTotal = document.createElement('td');
+                    colTotal.textContent = dato.quantity * dato.price;
+                    fila.appendChild(colTotal);
+                    
+                    tbody.appendChild(fila);
+                });
+            },
+            error: function(xhr){
+                alert("An error occured: " + xhr.status + " " + xhr.statusText);   
+            }
+        })
+    });
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

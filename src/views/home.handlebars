@@ -1,13 +1,15 @@
 <div>
     <h1>Productos Agregados Al Carrito</h1>
 
-    <label for="item-select">Carritos Pendientes:</label>
+    <label for="item-select">Seleccionar Carrito:</label>
     <select id="item-select" name="selectedItem">
         <option value="null"> Seleccionar</option>
         {{#each carritosArray}}
             <option value="{{this.id}}"> Carrito Nº{{this.id}}</option>
         {{/each}}
     </select>
+
+    <br><br>
 
     <table id="miTabla">
         <thead>

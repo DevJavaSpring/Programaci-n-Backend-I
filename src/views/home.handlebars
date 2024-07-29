@@ -1,0 +1,72 @@
+<div>
+    <h1>Productos Agregados Al Carrito</h1>
+
+    <label for="item-select">Carritos Pendientes:</label>
+    <select id="item-select" name="selectedItem">
+        <option value="null"> Seleccionar</option>
+        {{#each carritosArray}}
+            <option value="{{this.id}}"> Carrito Nº{{this.id}}</option>
+        {{/each}}
+    </select>
+
+    <table id="miTabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $("#item-select").change(function() {        
+        $.ajax({
+            url : "http://localhost:8080/obtenerProductosPorCarrito/1",
+            //data : {cid: 1},
+            type: 'get',
+            datatype: 'json',
+            success: function(data){
+                console.log("RESPUESTA DE LA API ", data);
+                //var productos = JSON.parse(data);
+
+                const tbody = document.querySelector('#miTabla tbody');
+                tbody.innerHTML = '';
+                
+                data.forEach(dato => {
+                    const fila = document.createElement('tr');
+
+                    const colId = document.createElement('td');
+                    colId.textContent = dato.product;
+                    fila.appendChild(colId);
+
+                    const colDescripcion = document.createElement('td');
+                    colDescripcion.textContent = dato.description;
+                    fila.appendChild(colDescripcion);
+
+                    const colPrecio = document.createElement('td');
+                    colPrecio.textContent = dato.price;
+                    fila.appendChild(colPrecio);
+
+                    const colCantidad = document.createElement('td');
+                    colCantidad.textContent = dato.quantity;
+                    fila.appendChild(colCantidad);
+
+                    const colTotal = document.createElement('td');
+                    colTotal.textContent = dato.quantity * dato.price;
+                    fila.appendChild(colTotal);
+                    
+                    tbody.appendChild(fila);
+                });
+            },
+            error: function(xhr){
+                alert("An error occured: " + xhr.status + " " + xhr.statusText);   
+            }
+        })
+    });
+</script>

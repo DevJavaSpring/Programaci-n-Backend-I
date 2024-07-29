@@ -19,6 +19,7 @@
                 <th>Total</th>
             </tr>
         </thead>
+        
         <tbody>
         </tbody>
     </table>
@@ -26,16 +27,24 @@
 
 <script>
     $("#item-select").change(function() {        
+        let option = document.getElementById('item-select').value;
+        
+        if(option === "null"){
+            let tbody = document.querySelector('#miTabla tbody');
+            tbody.innerHTML = '';
+            alert("Debe seleccionar un carrito.");
+            return;
+        }
+
         $.ajax({
-            url : "http://localhost:8080/obtenerProductosPorCarrito/1",
-            //data : {cid: 1},
+            url : `http://localhost:8080/obtenerProductosPorCarrito/${option}`,
             type: 'get',
             datatype: 'json',
             success: function(data){
                 console.log("RESPUESTA DE LA API ", data);
                 //var productos = JSON.parse(data);
 
-                const tbody = document.querySelector('#miTabla tbody');
+                let tbody = document.querySelector('#miTabla tbody');
                 tbody.innerHTML = '';
                 
                 data.forEach(dato => {

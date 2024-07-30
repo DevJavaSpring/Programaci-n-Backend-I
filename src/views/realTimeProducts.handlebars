@@ -1,8 +1,8 @@
 <div>
     <h1>Productos Agregados Al Carrito - WEBSOCKET</h1>
 
-    <label for="item-select">Seleccionar Carrito:</label>
-    <select id="item-select" name="selectedItem">
+    <label for="item-select-car">Seleccionar Carrito:</label>
+    <select id="item-select-car" name="selectedItem">
         <option value="null"> Seleccionar</option>
         {{#each carritosArray}}
             <option value="{{this.id}}"> Carrito Nº{{this.id}}</option>
@@ -39,8 +39,8 @@
 </div>
 
 <script>
-    $("#item-select").change(function() {        
-        let option = document.getElementById('item-select').value;
+    $("#item-select-car").change(function() {        
+        let option = document.getElementById('item-select-car').value;
         
         if(option === "null"){
             let tbody = document.querySelector('#miTabla tbody');
@@ -49,6 +49,10 @@
             return;
         }
 
+        actualizarTablaDeProductos(option);
+    });
+
+    function actualizarTablaDeProductos(option){
         $.ajax({
             url : `http://localhost:8080/obtenerProductosPorCarrito/${option}`,
             type: 'get',
@@ -82,7 +86,16 @@
                     const colTotal = document.createElement('td');
                     colTotal.textContent = dato.quantity * dato.price;
                     fila.appendChild(colTotal);
-                    
+                                
+                    const button = document.createElement('button');
+                    button.textContent = 'ELIMINAR';
+                    button.id = dato.product;
+                    fila.appendChild(button);
+
+                    button.addEventListener('click', function () {
+                        quitarProductoCarrito(dato.product);
+                    });
+
                     tbody.appendChild(fila);
                 });
             },
@@ -90,7 +103,7 @@
                 alert("An error occured: " + xhr.status + " " + xhr.statusText);   
             }
         })
-    });
+    }
 </script>
 
 <script src="/socket.io/socket.io.js"></script>

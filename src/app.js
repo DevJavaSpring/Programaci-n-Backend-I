@@ -41,15 +41,85 @@ app.use('/', routerViews);
 /**
  * CONFIGURACION DE SOCKET
  */
+const socketServer = new Server(httpServer);
+const {default : http} = await import ('http');
 
-const socketServer = new Server(httpServer)
 
 socketServer.on('connection', socketServer => {
     console.log("Nuevo cliente conectado")
+    
 
-    socketServer.on('messageCLIENT', data => {
-        console.log('Mensaje RECIBIDO DESDE CLIENTE: '+ data);
+    socketServer.on('messageSERVER', data => {
+        console.log("PETICION RECIBIDA DEL CLIENTE POR WEBSOCKET: Actualizar carrito con un producto")
 
-        socketServer.emit('messageSERVER', "mensaje enviado desde SERVIDOR");
+        const endpoint = {
+            hostname: '127.0.0.1',
+            port: 8080,
+            path: `/api/carts/${data.idCarrito}/product/${data.idProducto}`,
+            method: 'POST',
+        };
+
+        const req = http.request(endpoint, (res) => {
+            let responseData = '';
+
+            res.on('data', (chunk) => {
+                responseData += chunk;
+            });
+
+            res.on('end', () => {
+                try {
+                    socketServer.emit('messageCLIENT', responseData);
+                    //const parsedData = JSON.parse(responseData);
+                    //socket.emit('messageCLIENT', parsedData);
+                } catch (error) {
+                    console.error('Error al analizar los datos:', error);
+                    socketServer.emit('messageCLIENT', { error: 'Error al analizar los datos' });
+                }
+            });
+        });
+
+        req.on('error', (error) => {
+            console.error('Error en la solicitud HTTP:', error);
+            socketServer.emit('messageCLIENT', { error: 'Error en la solicitud HTTP' });
+        });
+
+        req.end();
+    })
+
+
+    socketServer.on('messageQuitarProductSERVER', data => {
+        console.log("PETICION RECIBIDA DEL CLIENTE POR WEBSOCKET: Quitar porducto del carrito")
+
+        const endpoint = {
+            hostname: '127.0.0.1',
+            port: 8080,
+            path: `/api/carts/${data.idCarrito}/product/${data.idProducto}`,
+            method: 'DELETE',
+        };
+
+        const req = http.request(endpoint, (res) => {
+            let responseData = '';
+
+            res.on('data', (chunk) => {
+                responseData += chunk;
+            });
+
+            res.on('end', () => {
+                try {
+                    socketServer.emit('messageQuitarProductCLIENT', responseData);
+                } catch (error) {
+                    console.error('Error al analizar los datos:', error);
+                    socketServer.emit('messageQuitarProductCLIENT', { error: 'Error al analizar los datos' });
+                }
+            });
+        });
+
+        req.on('error', (error) => {
+            console.error('Error en la solicitud HTTP:', error);
+            socketServer.emit('messageQuitarProductCLIENT', { error: 'Error en la solicitud HTTP' });
+        });
+
+        req.end();
     })
 });
+

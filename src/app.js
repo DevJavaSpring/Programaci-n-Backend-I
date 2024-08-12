@@ -13,18 +13,39 @@ app.use(express.urlencoded({ extended: true }));
 /**
  * CREACION DE SERVIDOR
  */
-const httpServer = app.listen(PORT, console.log(`Servidor backend corriendo en el puerto ${PORT}`))
+const httpServer = app.listen(PORT, console.log(`Servidor backend corriendo en el puerto ${PORT}`));
+
+
+
+/**
+ * CONEXION CON LA DB
+ */
+const {default : mongoose} = await import ('mongoose');
+
+mongoose.connect("mongodb://localhost:27017/mongoTest?retryWrites=true&w=majority")
+.then(() => {
+    console.log("Conectado a la base de datos")
+})
+.catch(error => {
+    console.error("Error al conectar con la base de datos", error)
+})
+
+
+
+
+
+
 
 /**
  * ENDPOINT DE PRODUCTOS
  */
-import routerProductos from './routes/productos.router.js';
+import routerProductos from './routes/product.router.js';
 app.use('/api/products', routerProductos);
 
 /**
  * ENDPOINT DE CARRITO
  */
-import routerCarritos from './routes/carritos.router.js';
+import routerCarritos from './routes/car.router.js';
 app.use('/api/carts', routerCarritos);
 
 /**

@@ -1,27 +1,27 @@
 import {Router} from 'express';
 
-const {default : ManagerCarritos} = await import ('../../manager/ManagerCarritos.js');
-const {default : ManagerProductos} = await import ('../../manager/ManagerProductos.js');
+const {default : CarManager} = await import ('../../manager/CarManager.js');
+const {default : ProductManager} = await import ('../../manager/ProductManager.js');
 const routerViews = Router();
 
 
 routerViews.get('/', (req, res) => {
-    let carritosArray = ManagerCarritos.obtenerInventario();
+    let carArray = CarManager.obtenerInventario();
 
     res.render('home', {
         user: "admin",
-        carritosArray: carritosArray
+        carritosArray: carArray
     })
 })
 
 routerViews.get('/realTimeProducts', (req, res) => {
-    let carritosArray = ManagerCarritos.obtenerInventario();
-    let productosArray = JSON.parse(ManagerProductos.obtenerInventarioTotal());
+    let carArray = CarManager.obtenerInventario();
+    let productArray = JSON.parse(ProductManager.obtenerInventarioTotal());
 
 
     res.render('realTimeProducts', {
-        carritosArray: carritosArray,
-        productosArray: productosArray
+        carritosArray: carArray,
+        productosArray: productArray
     })
 })
 

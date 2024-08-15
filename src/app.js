@@ -4,7 +4,7 @@ const {default : __dirname} = await import ('./utils.js');
 const {Server } = await import ('socket.io');
 
 const app = express();
-const PORT = 8080;
+const PORT = 8088;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,7 +22,7 @@ const httpServer = app.listen(PORT, console.log(`Servidor backend corriendo en e
  */
 const {default : mongoose} = await import ('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/mongoTest?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://DevJavaSpring:2DkcRVg5zymMG9UC@cluster0.9juxmmh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 .then(() => {
     console.log("Conectado a la base de datos")
 })

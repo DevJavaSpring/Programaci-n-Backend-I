@@ -8,9 +8,9 @@ const productRouter = Router();
  * ENDPONINT DE PRODUCTOS
  */
 productRouter.get('/', async (req, res)=>{
-    let {limit} = req.query;
+    let {limit, page, sort, query} = req.query;
 
-    ProductManager.obtenerInventario(limit)
+    ProductManager.obtenerInventario(limit, page, sort, query)
     .then((productsArray) => {
         return res.status(200).json(productsArray);
     })

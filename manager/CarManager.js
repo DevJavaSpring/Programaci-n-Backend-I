@@ -1,5 +1,5 @@
 const {default : CarModel} = await import ('../src/models/car.model.js');
-
+const {default : ProductModel} = await import ('../src/models/product.model.js');
 
 export default class CarManager{
 
@@ -8,12 +8,10 @@ export default class CarManager{
      * @returns
      */
 
-    static obtenerInventario(){
-        let carritoString = fs.readFileSync('./carritos.json', 'utf-8');
+    static async obtenerInventario(){
+        let carArray = await CarModel.find();
 
-        let carritoArray = (carritoString === "")? [] : JSON.parse(carritoString);
-
-        return carritoArray;
+        return carArray;
     }
 
     static async crearNuevoCarrito(){
@@ -29,7 +27,7 @@ export default class CarManager{
 
     static async buscarCarritoPorId(carritoId){
         try {
-            let carObject = await CarModel.findOne({ _id: carritoId });
+            let carObject = await CarModel.findOne({ _id: carritoId }).populate('products.product');
             console.log("Busqueda de carrito por id ejecutada correctamente");
             return carObject;
         } catch (error) {
@@ -39,20 +37,88 @@ export default class CarManager{
     }
 
 
-    static async actualizarProductosPorCarritoId(carId, productId){
+    static async agregarProductosPorCarritoId(carId, productId, cant){
         try {
             let carObject = await CarModel.findOne({ _id: carId });
 
-            carObject.products.push({product:productId})
+            let productoCargado =  carObject.products.find(p => p.product.equals(productId));
+            if (productoCargado) {
+                productoCargado.cantidad += cant;
+            } else {
+                carObject.products.push({ product:productId, cantidad:cant });
+            }
+            
+            let productObject = await ProductModel.findOne({ _id: productId });
 
-            let result = await CarModel.updateOne({ _id: carId }, carObject);
+            if (productObject.stock < cant) {
+                throw new Error('Stock insuficiente del producto: '+ productId +". Existen "+ productObject.stock +' unidades disponibles y se quiere llevar '+ cant);
+            }
 
-            let productObject = await PoductModel.findOne({ _id: productId });
-            console.log("Se agrgeo el producto con id: "+ productId +" en el carrito con id: "+ carId);
-            return result;
+            let updateCar     = await CarModel.updateOne({ _id: carId }, carObject);
+            let updateProduct = await ProductModel.updateOne({ _id: productId }, {stock: (productObject.stock - cant)});
+        
+            console.log("Se agrego "+ cant +" unidades del producto con id: "+ productId +" en el carrito con id: "+ carId);
+            return {
+                "resultUpdateCar": updateCar, 
+                "resultUpdateProduct": updateProduct,
+                "carrito Actualizado": await CarModel.findOne({ _id: carId }).populate('products.product'),
+            };
         } catch (error) {
-            console.error("Error al obtener el producto con id:", error);
+            console.error("Error al agregar producto a carrito", error);
             throw error;
         }
     }
+
+
+    static async borrarProductoIdPorCarritoId(carId, productId){
+        try {
+            let carObject = await CarModel.findOne({ _id: carId });
+
+            const deleteProduct = carObject.products.find(p => p.product.equals(productId));
+            if (deleteProduct === undefined) {
+                console.log('');
+                throw new Error('Producto no encontrado en el carrito, el producto con id: '+ productId +", no existe en el carrito con id: "+ carId);
+            }
+        
+            carObject.products = carObject.products.filter(p => !p.product.equals(productId));
+
+            let updateCar     = await CarModel.updateOne({ _id: carId }, carObject);
+            let updateProduct = await ProductModel.updateOne({ _id: productId }, {$inc: {stock: deleteProduct.cantidad} });
+
+
+            console.log("Se borro el producto con id: "+ productId +" del carrito con id: "+ carId);
+            return {
+                "resultUpdateCar": updateCar, 
+                "resultUpdateProduct": updateProduct,
+                "carrito Actualizado": await CarModel.findOne({ _id: carId }).populate('products.product'),
+            };
+        } catch (error) {
+            console.error("Error al agregar producto a carrito", error);
+            throw error;
+        }
+    }
+
+    static async borrarTodosProductoPorCarritoId(carId){
+        try {
+            let carObject = await CarModel.findOne({ _id: carId });
+
+            for (const p of carObject.products) {
+                await ProductModel.updateOne({ _id: p.product }, {$inc: {stock: p.cantidad} });
+            }
+
+            carObject.products = [];
+
+            let updateCar     = await CarModel.updateOne({ _id: carId }, carObject);
+
+            console.log("Se borraron todos los productos del carrito con id: "+ carId);
+            return {
+                "resultUpdateCar": updateCar, 
+                "carrito Actualizado": await CarModel.findOne({ _id: carId }).populate('products.product'),
+            };
+        } catch (error) {
+            console.error("Error al agregar producto a carrito", error);
+            throw error;
+        }
+    }
+   
 }

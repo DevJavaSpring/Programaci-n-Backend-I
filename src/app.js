@@ -4,7 +4,7 @@ const {default : __dirname} = await import ('./utils.js');
 const {Server } = await import ('socket.io');
 
 const app = express();
-const PORT = 8088;
+const PORT = 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -9,7 +9,7 @@ export default class ProductManager{
 
     static async obtenerInventarioTotal(){
         try {
-            let productArray = await ProductModel.find().exec();
+            let productArray = await ProductModel.find().lean().exec();
             console.log("Inventarios de productos obtenido correctamente:", productArray.length);
             return productArray;
         } catch (error) {

@@ -6,56 +6,48 @@ const routerViews = Router();
 
 
 routerViews.get('/', (req, res) => {
-    let carArray = CarManager.obtenerInventario();
-
-    res.render('home', {
-        user: "admin",
-        carritosArray: carArray
+    CarManager.obtenerInventario()
+    .then((carArray) => {
+        res.render('home', {
+            user: "admin",
+            carritosArray: carArray
+        });
+    })
+    .catch((error) => {
+        return res.status(503).send({error:"Consulta no ejecutada", status:"Ocurrio un error en la consulta", message:error});
     })
 })
 
 routerViews.get('/realTimeProducts', (req, res) => {
-    let carArray = CarManager.obtenerInventario();
-    let productArray = JSON.parse(ProductManager.obtenerInventarioTotal());
-
-
-    res.render('realTimeProducts', {
-        carritosArray: carArray,
-        productosArray: productArray
+    CarManager.obtenerInventario()
+    .then((carArray) => {
+        ProductManager.obtenerInventarioTotal()
+        .then((productArray) => {
+            res.render('realTimeProducts', {
+                carritosArray: carArray,
+                productosArray: productArray,
+            });
+        })
+        .catch((error) => {
+            return res.status(503).send({error:"Consulta no ejecutada", status:"Ocurrio un error en la consulta de productos", message:error});
+        })
+    })
+    .catch((error) => {
+        return res.status(503).send({error:"Consulta no ejecutada", status:"Ocurrio un error en la consulta de carritos", message:error});
     })
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 routerViews.get("/obtenerProductosPorCarrito/:cid",  (req, res)=>{
-    let carritos = ManagerCarritos.buscarCarritoPorId(Number(req.params.cid));
-    let productos = carritos[0].products;
+    CarManager.buscarCarritoPorId(req.params.cid)
+    .then((carrito) => {
+        let productos = carrito.products;
+        res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+        return  res.json(productos);
 
-    productos.forEach(p => {
-        let producto = ManagerProductos.buscarProductoPorId(Number(p.product));
-        p.title = producto[0].title;
-        p.description = producto[0].description;
-        p.code = producto[0].code;
-        p.price = producto[0].price;
-        p.category = producto[0].category;   
-    });
-    
-    res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
-    return  res.json(productos);
+    })
+    .catch((error) => {
+        return res.status(503).send({error:"Consulta no ejecutada", status:"Ocurrio un error en la consulta de productos para el carrito "+ req.params.cid, message:error});
+    })
 });
 
 export default routerViews;

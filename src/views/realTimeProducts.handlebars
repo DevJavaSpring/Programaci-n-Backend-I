@@ -5,7 +5,7 @@
     <select id="item-select-car" name="selectedItem">
         <option value="null"> Seleccionar</option>
         {{#each carritosArray}}
-            <option value="{{this.id}}"> Carrito Nº{{this.id}}</option>
+            <option value="{{this._id}}"> Carrito Nº{{this._id}}</option>
         {{/each}}
     </select>
 
@@ -15,7 +15,7 @@
     <select id="item-select-product" name="selectedItemProduct">
         <option value="null"> Seleccionar</option>
         {{#each productosArray}}
-            <option value="{{this.id}}"> {{this.description}}</option>
+            <option value="{{this._id}}"> {{this.description}}</option>
         {{/each}}
     </select>
     <button id="idAgregarProd"> Agregar</button>
@@ -68,23 +68,23 @@
                     const fila = document.createElement('tr');
 
                     const colId = document.createElement('td');
-                    colId.textContent = dato.product;
+                    colId.textContent = dato.product._id;
                     fila.appendChild(colId);
 
                     const colDescripcion = document.createElement('td');
-                    colDescripcion.textContent = dato.description;
+                    colDescripcion.textContent = dato.product.description;
                     fila.appendChild(colDescripcion);
 
                     const colPrecio = document.createElement('td');
-                    colPrecio.textContent = dato.price;
+                    colPrecio.textContent = dato.product.price;
                     fila.appendChild(colPrecio);
 
                     const colCantidad = document.createElement('td');
-                    colCantidad.textContent = dato.quantity;
+                    colCantidad.textContent = dato.cantidad;
                     fila.appendChild(colCantidad);
 
                     const colTotal = document.createElement('td');
-                    colTotal.textContent = dato.quantity * dato.price;
+                    colTotal.textContent = dato.cantidad * dato.product.price;
                     fila.appendChild(colTotal);
                                 
                     const button = document.createElement('button');
@@ -93,7 +93,7 @@
                     fila.appendChild(button);
 
                     button.addEventListener('click', function () {
-                        quitarProductoCarrito(dato.product);
+                        quitarProductoCarrito(dato.product._id);
                     });
 
                     tbody.appendChild(fila);

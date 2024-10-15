@@ -9,9 +9,13 @@ export default class CarManager{
      */
 
     static async obtenerInventario(){
-        let carArray = await CarModel.find();
-
-        return carArray;
+        try {
+            let carArray = await CarModel.find().lean().exec();
+            return carArray;
+        } catch (error) {
+            console.error("Error al buscar carritos,", error);
+            throw error;
+        }
     }
 
     static async crearNuevoCarrito(){

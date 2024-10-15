@@ -15,7 +15,7 @@ document.getElementById('idAgregarProd').addEventListener('click', function() {
     }
     
     console.log("EMITIENDO PETICION A SERVIDOR POR WEBSOCKET: Actualizar carrito con un producto")
-    socket.emit('messageSERVER', {idCarrito: Number(optionCar), idProducto: Number(optionProd)});
+    socket.emit('messageSERVER', {idCarrito: optionCar, idProducto: optionProd});
 });
 
 socket.on("messageCLIENT", data => {
@@ -29,7 +29,7 @@ function quitarProductoCarrito(idProduct){
     let optionCar = document.getElementById('item-select-car').value;
 
     console.log("EMITIENDO PETICION A SERVIDOR POR WEBSOCKET: Quitar producto de carrito")
-    socket.emit('messageQuitarProductSERVER', {idCarrito: Number(optionCar), idProducto: Number(idProduct)});
+    socket.emit('messageQuitarProductSERVER', {idCarrito: optionCar, idProducto: idProduct});
 }
 
 socket.on("messageQuitarProductCLIENT", data => {

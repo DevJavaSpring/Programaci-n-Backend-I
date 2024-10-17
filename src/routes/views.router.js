@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
 
 const {default : CarManager} = await import ('../../manager/CarManager.js');
 const {default : ProductManager} = await import ('../../manager/ProductManager.js');
@@ -48,6 +49,22 @@ routerViews.get("/obtenerProductosPorCarrito/:cid",  (req, res)=>{
     .catch((error) => {
         return res.status(503).send({error:"Consulta no ejecutada", status:"Ocurrio un error en la consulta de productos para el carrito "+ req.params.cid, message:error});
     })
+});
+
+routerViews.get('/login', isNotAuthenticated, (req, res) => {
+    if(!req.query.nuevoUsuario){
+        res.render('login', { alertNewUser: false });
+    } else {
+        res.render('login', { alertNewUser: true });
+    }
+})
+
+routerViews.get('/register', isNotAuthenticated, (req, res) => {
+    res.render('register');
+});
+
+routerViews.get('/profile', isAuthenticated, (req, res) => {
+    res.render('profile', { user: req.session.user });
 });
 
 export default routerViews;

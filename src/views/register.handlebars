@@ -1,0 +1,39 @@
+<form method="POST" action="http://localhost:8080/api/session/register" class="form-container">
+    <label for="first_name">First name</label>
+    <input type="text" name="first_name" id="first_name">
+
+    <label for="last_name">Last name</label>
+    <input type="text" name="last_name" id="last_name">
+
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email">
+
+    <label for="age">Age</label>
+    <input type="number" name="age" id="age">
+
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password">
+
+    <button type="submit">Register</button>
+</form>
+
+<style>
+  .form-container {
+      display: flex;
+      flex-direction: column;  /* Alinea los elementos de arriba hacia abajo */
+      width: 300px;            /* Ancho del formulario */
+      margin: 0 auto;          /* Centrar el formulario horizontalmente */
+      gap: 10px;               /* Espacio entre los elementos */
+  }
+
+  input {
+      padding: 8px;
+      font-size: 16px;
+  }
+
+  button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+  }
+</style>

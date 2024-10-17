@@ -1,0 +1,34 @@
+<form method="POST" action="/api/session/login" class="form-container">
+    <label for="email">Email</label>
+    <input type="email" name="email" required>
+    <label for="password">Password</label>
+    <input type="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+
+<script>
+    {{#if alertNewUser}}
+        alert("¡Se Registro un usuario de manera exitosa! Puedes iniciar sesión ahora.");
+    {{/if}}
+</script>
+
+<style>
+  .form-container {
+      display: flex;
+      flex-direction: column;  /* Alinea los elementos de arriba hacia abajo */
+      width: 300px;            /* Ancho del formulario */
+      margin: 0 auto;          /* Centrar el formulario horizontalmente */
+      gap: 10px;               /* Espacio entre los elementos */
+  }
+
+  input {
+      padding: 8px;
+      font-size: 16px;
+  }
+
+  button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+  }
+</style>

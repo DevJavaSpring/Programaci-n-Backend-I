@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import passport from 'passport';
 import { createHash, isValidPassword } from '../../src/utils.js';
 
 const sessionRouter = Router();
@@ -8,53 +9,39 @@ const sessionRouter = Router();
  */ 
 const {default : UserModel} = await import ('../models/user.model.js');
 
-sessionRouter.post('/register', async (req, res) => {
-    const { first_name, last_name, email, age, password } = req.body;
+sessionRouter.post('/register', passport.authenticate('register', { failureRedirect: 'failregister' }), async (req, res) => {
+    res.redirect("/login?nuevoUsuario=true");
+    //res.send({ status: "success", message: "usuario registrado" })
+});
 
-    if(first_name || last_name || email || !age || !password ){
-        return res.status(400).send({error: "400", status:"error", message:"valores incompletos "})
+sessionRouter.get('/failregister', async (req, res) => {
+    console.log('Estrategia Passport, Para Registracion, Fallida');
+    res.status(500).send({ code: 500, status: "error", message: "Error al registrar usuario en Estrategia Passport" });
+})
+
+
+
+sessionRouter.post('/login', passport.authenticate('login', { failureRedirect: 'faillogin' }), async (req, res) => {
+    if (!req.user){
+        return res.status(400).send({ code: 500, status: "error", error: "Credenciales invalidas" });
+    }
+
+    req.session.user = {
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        age: req.user.age,
+        email: req.user.email
     }
     
-    if(isNaN(Number(age))){
-        return res.status(400).send({error: 400, status:"Parametro desconocido", message:"Parametro desconocido en edad, el parametro debe ser numerico"})
-    }
-
-    try {
-        const userModel = new UserModel({ first_name, last_name, email, age, password: createHash(password) });
-        await userModel.save();
-        res.redirect("/login?nuevoUsuario=true");
-        console.log("Se agrego un nuevo usuario con la id: "+ user._id);
-    } catch (err) {
-        res.status(500).send('Error al registrar usuario');
-    }
-});
-
-sessionRouter.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        if (!email || !password) {
-            return res.status(400).send({ status: "error", error: "Valores incompletos" })
-        }
-
-        let userModelDTO = await UserModel.findOne({ email }, { email: 1, first_name: 1, last_name: 1, password: 1, age:1 });
-        userModelDTO = userModelDTO.toObject();
-
-        if (!userModelDTO) {
-            return res.status(400).send({ status: "error", error: "Usuario no encontrado" });
-        }
-
-        if (!isValidPassword(userModelDTO, password)) {
-            return res.status(403).send({ status: "error", error: "Password incorrecto" });
-        }
-
-        delete userModelDTO.password;
-        req.session.user = userModelDTO;
-    } catch (error) {
-        console.error(error);
-    }
-
     res.redirect('/profile');
 });
+
+sessionRouter.get('/faillogin', (req, res) => {
+    console.log('Estrategia Passport, Para Registracion, Fallida');
+    res.status(500).send({ code:500, status: "error", message: "Error al loggear usuario" });
+})
+
+
 
 sessionRouter.post('/logout', (req, res) => {
     req.session.destroy((err) => {

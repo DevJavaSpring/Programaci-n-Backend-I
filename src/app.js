@@ -83,6 +83,16 @@ import routerViews from './routes/views.router.js';
 app.use('/', routerViews);
 
 /**
+ * CONFIGURACION PASSPORT
+ */
+
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+/**
  * CONFIGURACION DE SOCKET
  */
 const socketServer = new Server(httpServer);

@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import passport from 'passport';
-import { createHash, isValidPassword } from '../../src/utils.js';
+import { createHash, isValidPassword, generarToken } from '../../src/utils.js';
 
 const sessionRouter = Router();
 
@@ -26,12 +26,22 @@ sessionRouter.post('/login', passport.authenticate('login', { failureRedirect: '
         return res.status(400).send({ code: 500, status: "error", error: "Credenciales invalidas" });
     }
 
-    req.session.user = {
+    const user = {
         first_name: req.user.first_name,
         last_name: req.user.last_name,
         age: req.user.age,
         email: req.user.email
     }
+
+    req.session.user = user;
+    
+    const accessToken = generarToken(user);
+    res.cookie('accessToken', accessToken, {
+        maxAge: 3600*8,
+        httpOnly: true,
+    });
+
+    console.log("Usuario logueado correctamente, Token de Acceso: "+ accessToken);
     
     res.redirect('/profile');
 });

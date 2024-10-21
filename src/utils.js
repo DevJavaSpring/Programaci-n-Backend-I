@@ -16,7 +16,7 @@ export const isValidPassword = (user, password) => bcrypt.compareSync(password, 
 
 
 import jwt from 'jsonwebtoken'
-const PRIVATE_KEY_JWT = "codigojwt";
+export const PRIVATE_KEY_JWT = "codigojwt";
 
 export const generarToken = (user) => {
     let token = jwt.sign({user}, PRIVATE_KEY_JWT, { expiresIn: "24h" });

@@ -1,9 +1,22 @@
 import passport from "passport";
 import local from 'passport-local'
 import userService from '../models/user.model.js'
-import { createHash, isValidPassword } from '../utils.js'
+import jwt from 'passport-jwt'
+import { createHash, isValidPassword, PRIVATE_KEY_JWT } from '../utils.js'
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt
+
+const cookieExtractor = (req) => {
+    let token = null
+    if (req && req.cookies) {
+        token = req.cookies['accessToken']
+    }
+    return token
+}
+
+
 
 const initializePassport = () => {
     passport.use(
@@ -82,6 +95,21 @@ const initializePassport = () => {
             return done(error)
         }
     }))
+    
+    passport.use('current', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
+        secretOrKey: PRIVATE_KEY_JWT  
+    }, async (jwt_payload, done) => {
+        try {
+            const user = await userService.findOne(jwt_payload.user.username);
+            if (!user) {
+                return done(null, false, { message: 'Usuario no encontrado' });
+            }
+            return done(null, user);  
+        } catch (error) {
+            return done(error);
+        }
+    }));
 }
 
 export default initializePassport

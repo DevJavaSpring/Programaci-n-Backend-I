@@ -1,0 +1,32 @@
+<form  class="form-container">
+    <h1>Perfil del usuario</h1>
+    <p>Nombre: {{user.first_name}} {{user.last_name}}</p>
+    <p>Email: {{user.email}}</p>
+    <p>Edad: {{user.age}}</p>
+</form>
+
+<form method="POST" action="/api/session/logout"  class="form-container">
+    <button type="submit">Salir</button>
+</form>
+
+
+<style>
+  .form-container {
+      display: flex;
+      flex-direction: column;  /* Alinea los elementos de arriba hacia abajo */
+      width: 300px;            /* Ancho del formulario */
+      margin: 0 auto;          /* Centrar el formulario horizontalmente */
+      gap: 10px;               /* Espacio entre los elementos */
+  }
+
+  input {
+      padding: 8px;
+      font-size: 16px;
+  }
+
+  button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+  }
+</style>

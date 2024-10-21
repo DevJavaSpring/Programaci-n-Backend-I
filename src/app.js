@@ -30,9 +30,32 @@ mongoose.connect("mongodb+srv://DevJavaSpring:2DkcRVg5zymMG9UC@cluster0.9juxmmh.
     console.error("Error al conectar con la base de datos", error)
 })
 
+/**
+ * COOKIE
+ */
+import cookieParser from 'cookie-parser'
+app.use(cookieParser());
+import routerCookies from './routes/cookie.router.js';
+app.use('/api/cookies', routerCookies);
 
 
-
+/**
+ * SESSION
+ */
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+app.use(session({
+    store:MongoStore.create({
+        mongoUrl:"mongodb+srv://DevJavaSpring:2DkcRVg5zymMG9UC@cluster0.9juxmmh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+        mongoOptions:{},
+        ttl:15
+    }),
+    secret: 'secretCoder',
+    resave: false,
+    saveUninitialized: false
+}))
+import routerSessiones from './routes/session.router.js';
+app.use('/api/session', routerSessiones);
 
 
 
@@ -58,6 +81,16 @@ app.use(express.static(__dirname + '/public'))
 
 import routerViews from './routes/views.router.js';
 app.use('/', routerViews);
+
+/**
+ * CONFIGURACION PASSPORT
+ */
+
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
  * CONFIGURACION DE SOCKET

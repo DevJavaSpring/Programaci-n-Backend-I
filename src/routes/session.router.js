@@ -60,4 +60,11 @@ sessionRouter.post('/logout', (req, res) => {
     });
 });
 
+sessionRouter.get('/current', passport.authenticate('current', { session: false }), (req, res) => {
+    res.status(200).json({
+        message: 'Usuario autenticado correctamente',
+        user: req.user  
+    });
+});
+
 export default sessionRouter;

@@ -47,8 +47,7 @@ sessionRouter.post('/login', passport.authenticate('login', { failureRedirect: '
 });
 
 sessionRouter.get('/faillogin', (req, res) => {
-    console.log('Estrategia Passport, Para Registracion, Fallida');
-    res.status(500).send({ code:500, status: "error", message: "Error al loggear usuario" });
+    res.status(500).send({ code:500, status: "error", message: "Error al loggear usuario, credenciales no validas" });
 })
 
 

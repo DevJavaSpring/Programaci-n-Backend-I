@@ -80,13 +80,12 @@ const initializePassport = () => {
             const user = await userService.findOne({ email: username });
 
             if (!user) {
-                console.log("El usuario no existe")
-                //return res.status(400).send({ status: "error", error: "Usuario no encontrado" });
+                //return req.res.status(400).send({ status: "error", error: "No existe un usuario con ese email" });
                 return done(null, false)
             }
 
             if (!isValidPassword(user, password)) {
-                //return res.status(403).send({ status: "error", error: "Password incorrecto" });
+                //return req.res.status(403).send({ status: "error", error: "Password incorrecto" });
                 return done(null, false)
             }
             

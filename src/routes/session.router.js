@@ -7,7 +7,7 @@ const sessionRouter = Router();
 /**
  * ENDPONINT DE SESSION
  */ 
-const {default : UserModel} = await import ('../models/user.model.js');
+const {default : UserModel} = await import ('../persistence/models/User.model.js');
 
 sessionRouter.post('/register', passport.authenticate('register', { failureRedirect: 'failregister' }), async (req, res) => {
     res.redirect("/login?nuevoUsuario=true");
@@ -37,7 +37,7 @@ sessionRouter.post('/login', passport.authenticate('login', { failureRedirect: '
     
     const accessToken = generarToken(user);
     res.cookie('accessToken', accessToken, {
-        maxAge: 3600*8,
+        maxAge: 3600000,
         httpOnly: true,
     });
 

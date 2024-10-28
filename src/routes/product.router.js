@@ -1,6 +1,6 @@
 import {Router} from 'express';
 
-const {default : ProductManager} = await import ('../../manager/ProductManager.js');
+const {default : ProductManager} = await import ('../services/ProductManager.js');
 const productRouter = Router();
 
 

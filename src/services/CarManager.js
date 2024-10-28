@@ -1,5 +1,5 @@
-const {default : CarModel} = await import ('../src/models/car.model.js');
-const {default : ProductModel} = await import ('../src/models/product.model.js');
+const {default : CarModel} = await import ('../persistence/models/car.model.js');
+const {default : ProductModel} = await import ('../persistence/models/Product.model.js');
 
 export default class CarManager{
 

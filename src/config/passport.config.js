@@ -1,6 +1,6 @@
 import passport from "passport";
 import local from 'passport-local'
-import userService from '../models/user.model.js'
+import userService from '../services/UserServices.js';
 import jwt from 'passport-jwt'
 import { createHash, isValidPassword, PRIVATE_KEY_JWT } from '../utils.js'
 
@@ -42,7 +42,7 @@ const initializePassport = () => {
                         return req.res.status(400).send({code: 400, status: "Error", message: "Parametro desconocido en edad, el parametro debe ser numerico" });
                     }
 
-                    let user = await userService.findOne({ email: username })
+                    let user = await userService.buscarUserPorEmail(username);
                     if (user) {
                         console.log("El usuario existe")
                         return done(null, false)
@@ -56,7 +56,7 @@ const initializePassport = () => {
                         password: createHash(password)
                     }
 
-                    let result = await userService.create(newUser)
+                    let result = await userService.agregarUser(newUser);
                     return done(null, result)
                 } catch (error) {
                     //return done("Error al registrar usuario: " + error.message)
@@ -71,13 +71,13 @@ const initializePassport = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        let user = await userService.findById(id)
+        let user = await userService.buscarUser(id);
         done(null, user)
     })
 
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (username, password, done) => {
         try {
-            const user = await userService.findOne({ email: username });
+            const user = await userService.buscarUserPorEmail(username);
 
             if (!user) {
                 //return req.res.status(400).send({ status: "error", error: "No existe un usuario con ese email" });
@@ -95,20 +95,23 @@ const initializePassport = () => {
         }
     }))
     
-    passport.use('current', new JWTStrategy({
-        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
-        secretOrKey: PRIVATE_KEY_JWT  
-    }, async (jwt_payload, done) => {
-        try {
-            const user = await userService.findOne(jwt_payload.user.username);
-            if (!user) {
-                return done(null, false, { message: 'Usuario no encontrado' });
+    passport.use('current', 
+        new JWTStrategy(
+            { jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), secretOrKey: PRIVATE_KEY_JWT }, 
+            async (jwt_payload, done) => {
+                try {
+                    const userDTO = await userService.buscarUserDTOPorEmail(jwt_payload.user.email);
+
+                    if (!userDTO) {
+                        return done(null, false, { message: 'Usuario no encontrado' });
+                    }
+                    return done(null, userDTO);  
+                } catch (error) {
+                    return done(error);
+                }
             }
-            return done(null, user);  
-        } catch (error) {
-            return done(error);
-        }
-    }));
+        )
+    );
 }
 
 export default initializePassport

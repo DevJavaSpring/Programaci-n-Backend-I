@@ -30,6 +30,6 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'admin'] } // Opciones válidas para role
 })
 
-const userModel = mongoose.model(userCollection, userSchema)
+const UserModel = mongoose.model(userCollection, userSchema)
 
-export default userModel;
+export default UserModel;

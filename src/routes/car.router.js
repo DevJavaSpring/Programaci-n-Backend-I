@@ -1,7 +1,7 @@
 import {Router} from 'express';
 
-const {default : CarManager} = await import ('../../manager/CarManager.js');
-const {default : ProductManager} = await import ('../../manager/ProductManager.js');
+const {default : CarManager} = await import ('../services/CarManager.js');
+const {default : ProductManager} = await import ('../services/ProductManager.js');
 const carRouter = Router();
 
 /**

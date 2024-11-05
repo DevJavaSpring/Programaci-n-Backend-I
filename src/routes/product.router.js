@@ -1,6 +1,6 @@
 import {Router} from 'express';
 
-const {default : ProductManager} = await import ('../services/ProductManager.js');
+const {default : productServices} = await import ('../services/ProductServices.js');
 const productRouter = Router();
 
 
@@ -10,7 +10,7 @@ const productRouter = Router();
 productRouter.get('/', async (req, res)=>{
     let {limit, page, sort, query} = req.query;
 
-    ProductManager.obtenerInventario(limit, page, sort, query)
+    productServices.obtenerInventario(limit, page, sort, query)
     .then((productsArray) => {
         return res.status(200).json(productsArray);
     })
@@ -20,7 +20,7 @@ productRouter.get('/', async (req, res)=>{
 });
 
 productRouter.get("/:pid", async (req, res)=>{
-    ProductManager.buscarProductoPorId(req.params.pid)
+    productServices.buscarProductPorId(req.params.pid)
     .then((productObject) => {
         if(productObject === null){
             return res.status(404).send({error: 404, status:"Producto No encontrado", message:("No existe un producto con la id "+ req.params.pid)})
@@ -45,7 +45,9 @@ productRouter.post("/", async (req, res)=>{
         return res.status(400).send({error: 400, status:"Parametro desconocido", message:"Parametro desconocido en price o stock, el parametro debe ser numerico"})
     }
   
-    ProductManager.agregarProducto(producto.title, producto.description, producto.code, Number(producto.price), producto.status, Number(producto.stock), producto.category)
+    producto.price = Number(producto.price);
+    producto.stock = Number(producto.stock);
+    productServices.agregarProduct(producto)
     .then((productObject) => {
         return res.status(200).send({status:"Nuevo producto agregado correctamente", producto:productObject});
     })
@@ -55,7 +57,7 @@ productRouter.post("/", async (req, res)=>{
 });
   
 productRouter.put("/:pid", async (req, res)=>{
-    ProductManager.buscarProductoPorId(req.params.pid)  
+    productServices.buscarProductPorId(req.params.pid)  
     .then((productObject) => {
         if(productObject === null){
             return res.status(404).send({error: 404, status:"Producto No encontrado", message:("No existe un producto con la id "+ req.params.pid)})
@@ -63,11 +65,23 @@ productRouter.put("/:pid", async (req, res)=>{
         
         let paramsUpdated = req.body;
         
-        if( (paramsUpdated.price && isNaN(Number(paramsUpdated.price))) || (paramsUpdated.stock && isNaN(Number(paramsUpdated.stock))) ){
-            return res.status(400).send({error: 400, status:"Valores desconocido", message:"Valores desconocido en price o stock, los valores deben ser numerico"})
+        if( paramsUpdated.price ){
+            if(isNaN(Number(paramsUpdated.price))){
+                return res.status(400).send({error: 400, status:"Valores desconocido", message:"Valores desconocido en price o stock, los valores deben ser numerico"})
+            } else {
+                paramsUpdated.price = Number(paramsUpdated.price);
+            }
         }
     
-        ProductManager.modificarProducto(req.params.pid, paramsUpdated)
+        if( paramsUpdated.stock ){
+            if(isNaN(Number(paramsUpdated.stock))){
+                return res.status(400).send({error: 400, status:"Valores desconocido", message:"Valores desconocido en price o stock, los valores deben ser numerico"})
+            } else {
+                paramsUpdated.stock = Number(paramsUpdated.stock);
+            }
+        }
+
+        productServices.modificarProduct(req.params.pid, paramsUpdated)
         .then((result) => {
             return res.status(200).send({status: "200 Successful OK",  message:"Se ha modificado el producto con id: " + req.params.pid, result: result});
         })
@@ -81,13 +95,13 @@ productRouter.put("/:pid", async (req, res)=>{
 });
 
 productRouter.delete("/:pid",  (req, res)=>{
-    ProductManager.buscarProductoPorId(req.params.pid)  
+    productServices.buscarProductPorId(req.params.pid)  
     .then((productObject) => {
         if(productObject === null){
             return res.status(404).send({error: 404, status:"Producto No encontrado", message:("No existe un producto con la id "+ req.params.pid)})
         }
       
-        ProductManager.borrarProducto(req.params.pid)
+        productServices.borrarProduct(req.params.pid)
         .then((result) => {
             return res.status(200).send({status: "200 Successful OK",  message:"Se ha dado de baja el producto con id: " + req.params.pid, result: result});
         })

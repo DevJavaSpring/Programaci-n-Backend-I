@@ -1,13 +1,13 @@
 import {Router} from 'express';
 import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
 
-const {default : CarManager} = await import ('../services/CarManager.js');
-const {default : ProductManager} = await import ('../services/ProductManager.js');
+const {default : carServices} = await import ('../services/CarServices.js');
+const {default : productServices} = await import ('../services/ProductServices.js');
 const routerViews = Router();
 
 
 routerViews.get('/', (req, res) => {
-    CarManager.obtenerInventario()
+    carServices.obtenerInventario()
     .then((carArray) => {
         res.render('home', {
             user: "admin",
@@ -20,9 +20,9 @@ routerViews.get('/', (req, res) => {
 })
 
 routerViews.get('/realTimeProducts', (req, res) => {
-    CarManager.obtenerInventario()
+    carServices.obtenerInventario()
     .then((carArray) => {
-        ProductManager.obtenerInventarioTotal()
+        productServices.obtenerInventarioTotal()
         .then((productArray) => {
             res.render('realTimeProducts', {
                 carritosArray: carArray,
@@ -39,7 +39,7 @@ routerViews.get('/realTimeProducts', (req, res) => {
 })
 
 routerViews.get("/obtenerProductosPorCarrito/:cid",  (req, res)=>{
-    CarManager.buscarCarritoPorId(req.params.cid)
+    carServices.buscarCarritoPorIdConProyeccionEnProducts(req.params.cid)
     .then((carrito) => {
         let productos = carrito.products;
         res.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');

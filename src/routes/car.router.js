@@ -1,14 +1,14 @@
 import {Router} from 'express';
 
-const {default : CarManager} = await import ('../services/CarManager.js');
-const {default : ProductManager} = await import ('../services/ProductManager.js');
+const {default : carServices} = await import ('../services/CarServices.js');
+const {default : productServices} = await import ('../services/ProductServices.js');
 const carRouter = Router();
 
 /**
  * ENDPONINT DE CARRITO
  */
 carRouter.post("/",  (req, res)=>{
-    CarManager.crearNuevoCarrito()
+    carServices.agregarCarrito({})
     .then((carObject) => {
         return res.status(200).send({status:"Exito", message:"Se ha creado un nuevo carrito de compras con id: "+ carObject._id , carrito:carObject});
     })
@@ -18,7 +18,7 @@ carRouter.post("/",  (req, res)=>{
 });
 
 carRouter.get("/:cid",  (req, res)=>{
-    CarManager.buscarCarritoPorId(req.params.cid)
+    carServices.buscarCarritoPorId(req.params.cid)
     .then((carObject) => {
         if(carObject === null){
             return res.status(404).send({error: 404, status:"Carrito No encontrado", message:("No existe un carrito con la id "+ req.params.cid)})
@@ -33,19 +33,19 @@ carRouter.get("/:cid",  (req, res)=>{
 
 carRouter.post("/:cid/product/:pid",  (req, res)=>{
     console.log("INICIO DE SERVICIO DE AGREGAR PRODUCTO A CARRITO");
-    ProductManager.buscarProductoPorId(req.params.pid)
+    productServices.buscarProductPorId(req.params.pid)
     .then((productObject) => {
         if(productObject === null){
             return res.status(404).send({error: 404, status:"Producto No encontrado", message:"No existe un producto con la id "+ req.params.pid})
         }
         
-        CarManager.buscarCarritoPorId(req.params.cid)
+        carServices.buscarCarritoPorId(req.params.cid)
         .then((carObject) => {
             if(carObject === null){
                 return res.status(404).send({error: 404, status:"Carrito No encontrado", message:"No existe un carrito con la id "+ req.params.pid})
             }
 
-            CarManager.agregarProductosPorCarritoId(req.params.cid, req.params.pid, 1)
+            carServices.agregarProductosPorCarritoId(req.params.cid, req.params.pid, 1)
             .then((result) => {
                 console.log("TERMINO EL SERVICIO DE AGREGAR PRODUCTO A CARRITO CORRECTAMENTE");
                 console.log(" ");
@@ -78,19 +78,19 @@ carRouter.post("/:cid/product/:pid",  (req, res)=>{
 
 carRouter.delete("/:cid/product/:pid",  (req, res)=>{
     console.log("INICIO DE SERVICIO BORRAR PRODUCTO DEL CARRITO");
-    ProductManager.buscarProductoPorId(req.params.pid)
+    productServices.buscarProductPorId(req.params.pid)
     .then((productObject) => {
         if(productObject === null){
             return res.status(404).send({error: 404, status:"Producto No encontrado", message:"No existe un producto con la id "+ req.params.pid})
         }
         
-        CarManager.buscarCarritoPorId(req.params.cid)
+        carServices.buscarCarritoPorId(req.params.cid)
         .then((carObject) => {
             if(carObject === null){
                 return res.status(404).send({error: 404, status:"Carrito No encontrado", message:"No existe un carrito con la id "+ req.params.pid})
             }
 
-            CarManager.borrarProductoIdPorCarritoId(req.params.cid, req.params.pid, 1)
+            carServices.borrarProductoIdPorCarritoId(req.params.cid, req.params.pid, 1)
             .then((result) => {
                 console.log("TERMINO EL SERVICIO BORRAR PRODUCTO DEL CARRITO CORRECTAMENTE");
                 console.log(" ");
@@ -123,13 +123,13 @@ carRouter.delete("/:cid/product/:pid",  (req, res)=>{
 
 carRouter.delete("/:cid",  (req, res)=>{
     console.log("INICIO DE SERVICIO BORRAR PRODUCTO DEL CARRITO");
-    CarManager.buscarCarritoPorId(req.params.cid)
+    carServices.buscarCarritoPorId(req.params.cid)
     .then((carObject) => {
         if(carObject === null){
             return res.status(404).send({error: 404, status:"Carrito No encontrado", message:"No existe un carrito con la id "+ req.params.pid})
         }
 
-        CarManager.borrarTodosProductoPorCarritoId(req.params.cid)
+        carServices.borrarTodosProductoPorCarritoId(req.params.cid)
         .then((result) => {
             console.log("TERMINO EL SERVICIO BORRAR TODOS PRODUCTOS DEL CARRITO CORRECTAMENTE");
             console.log(" ");

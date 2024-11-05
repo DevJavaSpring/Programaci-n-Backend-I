@@ -1,7 +1,7 @@
 const {default : userRepository} = await import ('../persistence/repositories/UserRepository.js');
 const {default : UserDTO} = await import ('../persistence/dto/UserDTO.js');
 
-class UserService{
+class UserServices{
     /**
      * SERVICIOS DE USER
      * @returns
@@ -95,4 +95,4 @@ class UserService{
     }
 }
 
-export default new UserService();
+export default new UserServices();

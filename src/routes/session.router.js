@@ -53,6 +53,9 @@ sessionRouter.get('/faillogin', (req, res) => {
 
 
 sessionRouter.post('/logout', (req, res) => {
+    res.clearCookie('accessToken');
+    console.log('Sesión cerrada correctamente, accessToken borrado correctamente');
+    
     req.session.destroy((err) => {
         if (err) return res.status(500).send('Error al cerrar sesión');
         res.redirect('/login');

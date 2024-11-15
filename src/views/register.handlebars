@@ -10,6 +10,13 @@
 
     <label for="age">Age</label>
     <input type="number" name="age" id="age">
+    
+    <label for="role">Role:</label>
+    <select name="role" id="role">
+        {{#each roleENUMArray}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
 
     <label for="password">Password</label>
     <input type="password" name="password" id="password">
@@ -27,6 +34,11 @@
   }
 
   input {
+      padding: 8px;
+      font-size: 16px;
+  }
+
+  select {
       padding: 8px;
       font-size: 16px;
   }

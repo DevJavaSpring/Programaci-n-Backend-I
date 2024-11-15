@@ -32,7 +32,7 @@ class UserServices{
         try {
             let userObject = await userRepository.save(user);
             console.log("Servicio \"agregarUser(user)\", se agrego un nuevo usuario con id: "+ userObject._id);
-            return carObject;
+            return userObject;
         } catch (error) {
             console.error("Error al agregar usuario en el servicio \"agregarUser(user)\":", error);
             throw error;

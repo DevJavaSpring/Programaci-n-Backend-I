@@ -59,8 +59,10 @@ routerViews.get('/login', isNotAuthenticated, (req, res) => {
     }
 })
 
+const {default : User} = await import ('../persistence/models/User.model.js');
 routerViews.get('/register', isNotAuthenticated, (req, res) => {
-    res.render('register');
+    const roleENUMArray = User.schema.path('role').enumValues;
+    res.render('register', {roleENUMArray: roleENUMArray});
 });
 
 routerViews.get('/profile', isAuthenticated, (req, res) => {

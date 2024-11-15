@@ -24,7 +24,7 @@ const initializePassport = () => {
         new LocalStrategy(
             { passReqToCallback: true, usernameField: 'email'}, 
             async (req, username, password, done) => {
-                const { first_name, last_name, email, age } = req.body;
+                const { first_name, last_name, email, age, role } = req.body;
                 
                 try {
                     if( typeof password === 'string' && password.trim().length === 0) {
@@ -53,7 +53,8 @@ const initializePassport = () => {
                         last_name,
                         email,
                         age,
-                        password: createHash(password)
+                        password: createHash(password),
+                        role
                     }
 
                     let result = await userService.agregarUser(newUser);
